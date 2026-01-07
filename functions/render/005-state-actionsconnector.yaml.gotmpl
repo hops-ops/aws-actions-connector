@@ -3,7 +3,7 @@
 
 # Build the subject pattern for trust policy
 # Format: repo:<org>/<repo>:<ref>
-{{- $subjectPattern := printf "repo:%s/%s:%s" $eff.github.orgOrUser $eff.github.repository $eff.github.refPattern }}
+{{- $subjectPattern := printf "repo:%s/%s:%s" $eff.github.owner $eff.github.repository $eff.github.refPattern }}
 
 # Build the OIDC provider ARN
 {{- $oidcProviderArn := printf "arn:aws:iam::%s:oidc-provider/token.actions.githubusercontent.com" $eff.accountId }}

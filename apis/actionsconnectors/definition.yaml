@@ -63,9 +63,9 @@ spec:
                 type: object
                 description: GitHub configuration for OIDC trust.
                 required:
-                - orgOrUser
+                - owner
                 properties:
-                  orgOrUser:
+                  owner:
                     type: string
                     description: GitHub organization or username (e.g., "myorg" or "myuser").
                   repository:

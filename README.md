@@ -19,7 +19,7 @@ metadata:
 spec:
   accountId: "123456789012"
   github:
-    orgOrUser: my-org
+    owner: my-org
 ```
 
 This creates an OIDC provider and role (`hops-github-actions`) that any repo in `my-org` can assume, with `AdministratorAccess` policy attached.
@@ -31,7 +31,7 @@ This creates an OIDC provider and role (`hops-github-actions`) that any repo in 
 | Field | Description |
 |-------|-------------|
 | `spec.accountId` | AWS Account ID |
-| `spec.github.orgOrUser` | GitHub organization or username |
+| `spec.github.owner` | GitHub organization or username |
 
 ### Optional Fields
 
@@ -55,7 +55,7 @@ Allow any repo in your org to assume the role:
 spec:
   accountId: "123456789012"
   github:
-    orgOrUser: my-org
+    owner: my-org
     repository: "*"
     refPattern: "*"
 ```
@@ -68,7 +68,7 @@ Restrict to a specific repo and branch:
 spec:
   accountId: "123456789012"
   github:
-    orgOrUser: my-org
+    owner: my-org
     repository: my-app
     refPattern: "ref:refs/heads/main"
   role:
@@ -85,7 +85,7 @@ Use GitHub Environments for approval workflows:
 spec:
   accountId: "123456789012"
   github:
-    orgOrUser: my-org
+    owner: my-org
     repository: infrastructure
     refPattern: "environment:production"
   role:
@@ -138,7 +138,7 @@ spec:
   # Exclude Delete to prevent accidental deletion
   managementPolicies: [Create, Update, Observe, LateInitialize]
   github:
-    orgOrUser: my-org
+    owner: my-org
   oidcProvider:
     externalName: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
   role:

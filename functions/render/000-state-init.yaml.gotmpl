@@ -28,7 +28,7 @@
       "managementPolicies" ($spec.managementPolicies | default (list "*"))
       "labels" (merge $defaultLabels ($spec.labels | default dict))
       "github" (dict
-        "orgOrUser" ($github.orgOrUser | default "")
+        "owner" ($github.owner | default "")
         "repository" ($github.repository | default "*")
         "refPattern" ($github.refPattern | default "*")
         "thumbprints" ($github.thumbprints | default (list "6938fd4d98bab03faadb97b34396831e3780aea1"))

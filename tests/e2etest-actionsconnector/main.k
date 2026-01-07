@@ -116,7 +116,7 @@ _items = [
                         # Prevent deletion of resources after E2E test
                         managementPolicies = _orphan
                         github = {
-                            orgOrUser = "hops-ops"
+                            owner = "hops-ops"
                             repository = "*"
                             refPattern = "*"
                         }

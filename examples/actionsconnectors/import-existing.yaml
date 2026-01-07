@@ -20,7 +20,7 @@ spec:
   - Observe
   - LateInitialize
   github:
-    orgOrUser: my-org
+    owner: my-org
     repository: "*"
     refPattern: "*"
   # External name for the OIDC provider (ARN)

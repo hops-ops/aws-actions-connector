@@ -9,7 +9,7 @@ spec:
     name: production
     kind: ProviderConfig
   github:
-    orgOrUser: my-org
+    owner: my-org
     repository: infrastructure
     refPattern: "environment:production"
   role:

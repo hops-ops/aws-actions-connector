@@ -15,7 +15,7 @@ _items = [
                 metadata.name = "my-gha"
                 spec = {
                     accountId = "123456789012"
-                    github.orgOrUser = "my-org"
+                    github.owner = "my-org"
                 }
             }
             assertResources = [
@@ -40,7 +40,7 @@ _items = [
                 metadata.name = "my-gha"
                 spec = {
                     accountId = "123456789012"
-                    github.orgOrUser = "my-org"
+                    github.owner = "my-org"
                     role.name = "custom-role"
                 }
             }
@@ -67,7 +67,7 @@ _items = [
                 spec = {
                     accountId = "123456789012"
                     github = {
-                        orgOrUser = "my-org"
+                        owner = "my-org"
                         repository = "*"
                         refPattern = "*"
                     }
@@ -97,7 +97,7 @@ _items = [
                 spec = {
                     accountId = "123456789012"
                     github = {
-                        orgOrUser = "my-org"
+                        owner = "my-org"
                         repository = "infrastructure"
                         refPattern = "ref:refs/heads/main"
                     }
@@ -127,7 +127,7 @@ _items = [
                 spec = {
                     accountId = "123456789012"
                     github = {
-                        orgOrUser = "my-org"
+                        owner = "my-org"
                         repository = "infrastructure"
                         refPattern = "environment:production"
                     }
@@ -156,7 +156,7 @@ _items = [
                 metadata.name = "tagged"
                 spec = {
                     accountId = "123456789012"
-                    github.orgOrUser = "my-org"
+                    github.owner = "my-org"
                     role.name = "tagged-role"
                     tags = {
                         environment = "production"
@@ -191,7 +191,7 @@ _items = [
                 metadata.name = "bounded"
                 spec = {
                     accountId = "123456789012"
-                    github.orgOrUser = "my-org"
+                    github.owner = "my-org"
                     role = {
                         name = "bounded-role"
                         permissionsBoundary = "arn:aws:iam::123456789012:policy/boundary"

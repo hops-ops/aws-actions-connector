@@ -9,7 +9,7 @@ spec:
     name: default
     kind: ProviderConfig
   github:
-    orgOrUser: my-org
+    owner: my-org
     repository: "*"
     refPattern: "*"
   policy:
