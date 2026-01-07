@@ -1,0 +1,46 @@
+# code: language=yaml
+{{- if $state.actionsconnector.policyAttachment.render }}
+---
+apiVersion: iam.aws.m.upbound.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: {{ $state.actionsconnector.policyAttachment.name }}
+  annotations:
+    {{ setResourceNameAnnotation "policy-attachment" }}
+    {{- if $state.actionsconnector.policyAttachment.externalName }}
+    crossplane.io/external-name: {{ $state.actionsconnector.policyAttachment.externalName }}
+    {{- end }}
+spec:
+  providerConfigRef:
+    name: {{ $state.actionsconnector.providerConfig.name }}
+    kind: {{ $state.actionsconnector.providerConfig.kind }}
+  managementPolicies: {{ toYaml $state.actionsconnector.managementPolicies | nindent 4 }}
+  forProvider:
+    policyArn: {{ $state.actionsconnector.policyAttachment.policyArn }}
+    roleSelector:
+      matchControllerRef: true
+      matchLabels:
+        hops.ops.com.ai/actionsconnector: {{ $state.actionsconnector.name }}
+{{- end }}
+
+# Usage: Role protects RolePolicyAttachment
+{{- if and $state.observed.role.ready $state.observed.policyAttachment.ready }}
+---
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+  name: {{ $state.actionsconnector.name }}-role-protects-attachment
+  annotations:
+    {{ setResourceNameAnnotation "usage-role-attachment" }}
+spec:
+  of:
+    apiVersion: iam.aws.m.upbound.io/v1beta1
+    kind: Role
+    resourceRef:
+      name: {{ $state.actionsconnector.role.name }}
+  by:
+    apiVersion: iam.aws.m.upbound.io/v1beta1
+    kind: RolePolicyAttachment
+    resourceRef:
+      name: {{ $state.actionsconnector.policyAttachment.name }}
+{{- end }}

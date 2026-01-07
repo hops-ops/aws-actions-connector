@@ -1,0 +1,17 @@
+# code: language=yaml
+{{- $allReady := and $state.observed.oidcProvider.ready $state.observed.role.ready $state.observed.policyAttachment.ready }}
+
+{{- $state = set $state "status" (dict
+  "ready" $allReady
+  "oidcProvider" (dict
+    "arn" ($state.observed.oidcProvider.arn | default "Pending")
+    "url" ($state.observed.oidcProvider.url | default "Pending")
+  )
+  "role" (dict
+    "arn" ($state.observed.role.arn | default "Pending")
+    "name" $state.actionsconnector.role.name
+  )
+  "trustPolicy" (dict
+    "subject" $state.actionsconnector.trustPolicy.subject
+  )
+) }}

@@ -1,0 +1,16 @@
+# code: language=yaml
+{{- $xr := getCompositeResource . }}
+{{- $s := $state.status }}
+---
+apiVersion: {{ $xr.apiVersion }}
+kind: {{ $xr.kind }}
+status:
+  ready: {{ $s.ready }}
+  oidcProvider:
+    arn: {{ $s.oidcProvider.arn }}
+    url: {{ $s.oidcProvider.url }}
+  role:
+    arn: {{ $s.role.arn }}
+    name: {{ $s.role.name }}
+  trustPolicy:
+    subject: {{ $s.trustPolicy.subject }}

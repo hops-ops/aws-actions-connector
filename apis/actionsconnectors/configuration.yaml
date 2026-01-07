@@ -1,0 +1,14 @@
+apiVersion: meta.pkg.crossplane.io/v1alpha1
+kind: Configuration
+metadata:
+  name: aws-actions-connector
+  annotations:
+    meta.crossplane.io/maintainer: Patrick Lee Scott
+    meta.crossplane.io/source: github.com/hops-ops/aws-actions-connector
+    meta.crossplane.io/description: Sets up GitHub Actions OIDC federation with AWS for secure CI/CD access.
+spec:
+  dependsOn:
+  - provider: xpkg.crossplane.io/crossplane-contrib/provider-aws-iam
+    version: ">=v2.3.0"
+  - function: xpkg.crossplane.io/crossplane-contrib/function-auto-ready
+    version: ">=v0.6.0"

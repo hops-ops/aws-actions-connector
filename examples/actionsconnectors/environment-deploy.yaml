@@ -1,0 +1,21 @@
+apiVersion: aws.hops.ops.com.ai/v1alpha1
+kind: ActionsConnector
+metadata:
+  name: prod-deploy
+  namespace: default
+spec:
+  accountId: "123456789012"
+  providerConfigRef:
+    name: production
+    kind: ProviderConfig
+  github:
+    orgOrUser: my-org
+    repository: infrastructure
+    refPattern: "environment:production"
+  role:
+    name: github-actions-prod-deploy
+  policy:
+    arn: arn:aws:iam::aws:policy/PowerUserAccess
+  tags:
+    environment: production
+    managed-by: crossplane

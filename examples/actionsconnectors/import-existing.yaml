@@ -1,0 +1,40 @@
+# Import existing GitHub Actions OIDC resources
+# Use this example when you have pre-existing OIDC provider, role, and policy attachment
+# that you want Crossplane to manage.
+#
+# Set managementPolicies to exclude Delete to prevent accidental deletion of the imported resources.
+apiVersion: aws.hops.ops.com.ai/v1alpha1
+kind: ActionsConnector
+metadata:
+  name: imported-gha
+  namespace: default
+spec:
+  accountId: "123456789012"
+  providerConfigRef:
+    name: default
+    kind: ProviderConfig
+  # Exclude Delete from management policies to prevent accidental deletion
+  managementPolicies:
+  - Create
+  - Update
+  - Observe
+  - LateInitialize
+  github:
+    orgOrUser: my-org
+    repository: "*"
+    refPattern: "*"
+  # External name for the OIDC provider (ARN)
+  oidcProvider:
+    externalName: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
+  # External name for the IAM role
+  role:
+    name: existing-gha-role
+    externalName: existing-gha-role
+  policy:
+    arn: arn:aws:iam::aws:policy/AdministratorAccess
+  # External name for the policy attachment (format: role-name/policy-arn)
+  policyAttachment:
+    externalName: existing-gha-role/arn:aws:iam::aws:policy/AdministratorAccess
+  tags:
+    imported: "true"
+    managed-by: crossplane

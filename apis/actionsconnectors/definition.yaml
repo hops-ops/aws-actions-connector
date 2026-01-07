@@ -1,0 +1,159 @@
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: actionsconnectors.aws.hops.ops.com.ai
+spec:
+  scope: Namespaced
+  group: aws.hops.ops.com.ai
+  names:
+    kind: ActionsConnector
+    plural: actionsconnectors
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        required:
+        - spec
+        properties:
+          spec:
+            type: object
+            required:
+            - accountId
+            - github
+            properties:
+              accountId:
+                type: string
+                description: AWS Account ID where the OIDC provider and role will be created.
+              providerConfigRef:
+                type: object
+                description: Reference to the AWS ProviderConfig.
+                properties:
+                  name:
+                    type: string
+                    description: Name of the ProviderConfig. Defaults to "default".
+                    default: default
+                  kind:
+                    type: string
+                    description: Kind of the ProviderConfig. Defaults to "ProviderConfig".
+                    default: ProviderConfig
+              managementPolicies:
+                type: array
+                description: Crossplane management policies propagated to managed resources. Defaults to ["*"].
+                items:
+                  type: string
+                  enum:
+                  - "*"
+                  - Create
+                  - Observe
+                  - Update
+                  - Delete
+                  - LateInitialize
+                default:
+                - "*"
+              github:
+                type: object
+                description: GitHub configuration for OIDC trust.
+                required:
+                - orgOrUser
+                properties:
+                  orgOrUser:
+                    type: string
+                    description: GitHub organization or username (e.g., "myorg" or "myuser").
+                  repository:
+                    type: string
+                    description: Repository name or pattern. Use "*" for all repos. Defaults to "*".
+                    default: "*"
+                  refPattern:
+                    type: string
+                    description: |
+                      Git ref pattern for the trust policy condition. Use "*" for any ref.
+                      Examples: "*", "ref:refs/heads/main", "environment:production".
+                    default: "*"
+                  thumbprints:
+                    type: array
+                    description: |
+                      List of thumbprints for GitHub OIDC. Defaults to the current GitHub Actions OIDC thumbprint.
+                      The default (6938fd4d98bab03faadb97b34396831e3780aea1) is the thumbprint for token.actions.githubusercontent.com.
+                    items:
+                      type: string
+                    default:
+                    - "6938fd4d98bab03faadb97b34396831e3780aea1"
+              oidcProvider:
+                type: object
+                description: OIDC provider configuration for importing existing resources.
+                properties:
+                  externalName:
+                    type: string
+                    description: External name (ARN) of existing OIDC provider to import. Leave empty to create new.
+              role:
+                type: object
+                description: IAM role configuration.
+                properties:
+                  name:
+                    type: string
+                    description: Name for the IAM role. Defaults to "hops-gh-actions".
+                    default: hops-gh-actions
+                  externalName:
+                    type: string
+                    description: External name of existing IAM role to import. Leave empty to create new.
+                  permissionsBoundary:
+                    type: string
+                    description: ARN of the IAM permissions boundary to attach to the role.
+              policy:
+                type: object
+                description: IAM policy configuration.
+                required:
+                - arn
+                properties:
+                  arn:
+                    type: string
+                    description: ARN of the IAM policy to attach to the role.
+                default:
+                  arn: "arn:aws:iam::aws:policy/AdministratorAccess"
+              policyAttachment:
+                type: object
+                description: Policy attachment configuration for importing existing resources.
+                properties:
+                  externalName:
+                    type: string
+                    description: External name of existing policy attachment to import. Format is "role-name/policy-arn".
+              tags:
+                type: object
+                description: "AWS resource tags. Automatically includes {\"hops\": \"true\"}."
+                x-kubernetes-preserve-unknown-fields: true
+          status:
+            type: object
+            properties:
+              ready:
+                type: boolean
+                description: Whether all resources are ready.
+              oidcProvider:
+                type: object
+                description: OIDC provider status.
+                properties:
+                  arn:
+                    type: string
+                    description: ARN of the OIDC provider.
+                  url:
+                    type: string
+                    description: URL of the OIDC provider.
+              role:
+                type: object
+                description: IAM role status.
+                properties:
+                  arn:
+                    type: string
+                    description: ARN of the IAM role.
+                  name:
+                    type: string
+                    description: Name of the IAM role.
+              trustPolicy:
+                type: object
+                description: Trust policy configuration.
+                properties:
+                  subject:
+                    type: string
+                    description: The subject pattern used in the trust policy.

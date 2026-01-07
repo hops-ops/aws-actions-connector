@@ -1,0 +1,45 @@
+# code: language=yaml
+{{- $eff := $state.spec.effective }}
+
+# Build the subject pattern for trust policy
+# Format: repo:<org>/<repo>:<ref>
+{{- $subjectPattern := printf "repo:%s/%s:%s" $eff.github.orgOrUser $eff.github.repository $eff.github.refPattern }}
+
+# Build the OIDC provider ARN
+{{- $oidcProviderArn := printf "arn:aws:iam::%s:oidc-provider/token.actions.githubusercontent.com" $eff.accountId }}
+
+# Role name - already defaulted in state-init
+{{- $roleName := $eff.role.name }}
+
+# Core computed state
+{{- $actionsconnector := dict
+  "name" $eff.name
+  "accountId" $eff.accountId
+  "providerConfig" $eff.providerConfigRef
+  "managementPolicies" $eff.managementPolicies
+  "tags" $eff.tags
+  "oidcProvider" (dict
+    "render" true
+    "name" (printf "%s-gha-oidc" $eff.name)
+    "arn" $oidcProviderArn
+    "url" "https://token.actions.githubusercontent.com"
+    "thumbprints" $eff.github.thumbprints
+    "externalName" $eff.oidcProvider.externalName
+  )
+  "role" (dict
+    "render" true
+    "name" $roleName
+    "externalName" $eff.role.externalName
+    "permissionsBoundary" $eff.role.permissionsBoundary
+  )
+  "policyAttachment" (dict
+    "render" true
+    "name" (printf "%s-policy" $roleName)
+    "policyArn" $eff.policy.arn
+    "externalName" $eff.policyAttachment.externalName
+  )
+  "trustPolicy" (dict
+    "subject" $subjectPattern
+  )
+}}
+{{- $state = set $state "actionsconnector" $actionsconnector }}

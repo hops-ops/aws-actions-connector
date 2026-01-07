@@ -1,0 +1,24 @@
+# code: language=yaml
+{{- if $state.actionsconnector.oidcProvider.render }}
+---
+apiVersion: iam.aws.m.upbound.io/v1beta1
+kind: OpenIDConnectProvider
+metadata:
+  name: {{ $state.actionsconnector.oidcProvider.name }}
+  annotations:
+    {{ setResourceNameAnnotation "oidc-provider" }}
+    {{- if $state.actionsconnector.oidcProvider.externalName }}
+    crossplane.io/external-name: {{ $state.actionsconnector.oidcProvider.externalName }}
+    {{- end }}
+spec:
+  providerConfigRef:
+    name: {{ $state.actionsconnector.providerConfig.name }}
+    kind: {{ $state.actionsconnector.providerConfig.kind }}
+  managementPolicies: {{ toYaml $state.actionsconnector.managementPolicies | nindent 4 }}
+  forProvider:
+    url: {{ $state.actionsconnector.oidcProvider.url }}
+    clientIdList:
+    - sts.amazonaws.com
+    thumbprintList: {{ toYaml $state.actionsconnector.oidcProvider.thumbprints | nindent 4 }}
+    tags: {{ toYaml $state.actionsconnector.tags | nindent 6 }}
+{{- end }}

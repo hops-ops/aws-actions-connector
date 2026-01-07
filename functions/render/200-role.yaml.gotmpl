@@ -1,0 +1,45 @@
+# code: language=yaml
+{{- if $state.actionsconnector.role.render }}
+---
+apiVersion: iam.aws.m.upbound.io/v1beta1
+kind: Role
+metadata:
+  name: {{ $state.actionsconnector.role.name }}
+  annotations:
+    {{ setResourceNameAnnotation "role" }}
+    {{- if $state.actionsconnector.role.externalName }}
+    crossplane.io/external-name: {{ $state.actionsconnector.role.externalName }}
+    {{- end }}
+  labels:
+    hops.ops.com.ai/actionsconnector: {{ $state.actionsconnector.name }}
+spec:
+  providerConfigRef:
+    name: {{ $state.actionsconnector.providerConfig.name }}
+    kind: {{ $state.actionsconnector.providerConfig.kind }}
+  managementPolicies: {{ toYaml $state.actionsconnector.managementPolicies | nindent 4 }}
+  forProvider:
+    assumeRolePolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "GitHubActionsOIDC",
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "{{ $state.actionsconnector.oidcProvider.arn }}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringLike": {
+                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                "token.actions.githubusercontent.com:sub": "{{ $state.actionsconnector.trustPolicy.subject }}"
+              }
+            }
+          }
+        ]
+      }
+    {{- if $state.actionsconnector.role.permissionsBoundary }}
+    permissionsBoundary: {{ $state.actionsconnector.role.permissionsBoundary }}
+    {{- end }}
+    tags: {{ toYaml $state.actionsconnector.tags | nindent 6 }}
+{{- end }}
