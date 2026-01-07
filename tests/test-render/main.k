@@ -3,7 +3,7 @@ import models.io.upbound.dev.meta.v1alpha1 as metav1alpha1
 import models.k8s.apimachinery.pkg.apis.meta.v1 as metav1
 
 _items = [
-    # Test 1: Default role name is hops-gh-actions
+    # Test 1: Default role name is hops-github-actions
     metav1alpha1.CompositionTest {
         metadata.name = "default-role-name"
         spec = {
@@ -22,7 +22,7 @@ _items = [
                 {
                     apiVersion = "iam.aws.m.upbound.io/v1beta1"
                     kind = "Role"
-                    metadata.name = "hops-gh-actions"
+                    metadata.name = "hops-github-actions"
                 }
             ]
         }

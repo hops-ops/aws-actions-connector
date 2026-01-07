@@ -10,8 +10,7 @@ metadata:
     {{- if $state.actionsconnector.role.externalName }}
     crossplane.io/external-name: {{ $state.actionsconnector.role.externalName }}
     {{- end }}
-  labels:
-    hops.ops.com.ai/actionsconnector: {{ $state.actionsconnector.name }}
+  labels: {{ $state.actionsconnector.labels | toJson }}
 spec:
   providerConfigRef:
     name: {{ $state.actionsconnector.providerConfig.name }}

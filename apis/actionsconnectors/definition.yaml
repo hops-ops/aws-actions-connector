@@ -53,6 +53,12 @@ spec:
                   - LateInitialize
                 default:
                 - "*"
+              labels:
+                type: object
+                description: Custom labels applied to all managed resources. Merged with default labels (hops.ops.com.ai/managed, hops.ops.com.ai/<kind>).
+                additionalProperties:
+                  type: string
+                x-kubernetes-preserve-unknown-fields: true
               github:
                 type: object
                 description: GitHub configuration for OIDC trust.
@@ -94,8 +100,8 @@ spec:
                 properties:
                   name:
                     type: string
-                    description: Name for the IAM role. Defaults to "hops-gh-actions".
-                    default: hops-gh-actions
+                    description: Name for the IAM role. Defaults to "hops-github-actions".
+                    default: hops-github-actions
                   externalName:
                     type: string
                     description: External name of existing IAM role to import. Leave empty to create new.

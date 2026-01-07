@@ -38,14 +38,13 @@ _orphan = ["Create", "Observe", "Update", "LateInitialize"]
 # External names for import (leave empty for create, populate for import)
 # =============================================================================
 # OIDC Provider: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
-# _oidc_external_name = "arn:aws:iam::" + _testAccountId + ":oidc-provider/token.actions.githubusercontent.com"
-_oidc_external_name = ""
+_oidc_external_name = "arn:aws:iam::" + _testAccountId + ":oidc-provider/token.actions.githubusercontent.com"
 
-# Role: hops-gh-actions
-# _role_external_name = "hops-gh-actions"
+# Role: hops-github-actions
+# _role_external_name = "hops-github-actions"
 _role_external_name = ""
 
-# Policy Attachment: hops-gh-actions/arn:aws:iam::aws:policy/AdministratorAccess'
+# Policy Attachment: hops-github-actions/arn:aws:iam::aws:policy/AdministratorAccess'
 _policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 _policy_attachment_external_name = _role_external_name + "/" + _policy_arn if _role_external_name else ""
 

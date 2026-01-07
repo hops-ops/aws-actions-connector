@@ -10,6 +10,7 @@ metadata:
     {{- if $state.actionsconnector.policyAttachment.externalName }}
     crossplane.io/external-name: {{ $state.actionsconnector.policyAttachment.externalName }}
     {{- end }}
+  labels: {{ $state.actionsconnector.labels | toJson }}
 spec:
   providerConfigRef:
     name: {{ $state.actionsconnector.providerConfig.name }}
@@ -32,6 +33,7 @@ metadata:
   name: {{ $state.actionsconnector.name }}-role-protects-attachment
   annotations:
     {{ setResourceNameAnnotation "usage-role-attachment" }}
+  labels: {{ $state.actionsconnector.labels | toJson }}
 spec:
   of:
     apiVersion: iam.aws.m.upbound.io/v1beta1
