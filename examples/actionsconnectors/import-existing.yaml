@@ -23,18 +23,16 @@ spec:
     owner: my-org
     repository: "*"
     refPattern: "*"
-  # External name for the OIDC provider (ARN)
-  oidcProvider:
-    externalName: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
-  # External name for the IAM role
+  # External names of existing AWS resources to import
+  imports:
+    oidcProvider: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
+    role: existing-gha-role
+    policyAttachment: existing-gha-role/arn:aws:iam::aws:policy/AdministratorAccess
+  # Role configuration (name must match imported role)
   role:
     name: existing-gha-role
-    externalName: existing-gha-role
   policy:
     arn: arn:aws:iam::aws:policy/AdministratorAccess
-  # External name for the policy attachment (format: role-name/policy-arn)
-  policyAttachment:
-    externalName: existing-gha-role/arn:aws:iam::aws:policy/AdministratorAccess
   tags:
     imported: "true"
     managed-by: crossplane

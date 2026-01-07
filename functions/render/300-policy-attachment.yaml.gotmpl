@@ -7,8 +7,8 @@ metadata:
   name: {{ $state.actionsconnector.policyAttachment.name }}
   annotations:
     {{ setResourceNameAnnotation "policy-attachment" }}
-    {{- if $state.actionsconnector.policyAttachment.externalName }}
-    crossplane.io/external-name: {{ $state.actionsconnector.policyAttachment.externalName }}
+    {{- if $state.actionsconnector.imports.policyAttachment }}
+    crossplane.io/external-name: {{ $state.actionsconnector.imports.policyAttachment }}
     {{- end }}
   labels: {{ $state.actionsconnector.labels | toJson }}
 spec:

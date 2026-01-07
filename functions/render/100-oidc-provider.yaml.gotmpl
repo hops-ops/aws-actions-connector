@@ -7,8 +7,8 @@ metadata:
   name: {{ $state.actionsconnector.oidcProvider.name }}
   annotations:
     {{ setResourceNameAnnotation "oidc-provider" }}
-    {{- if $state.actionsconnector.oidcProvider.externalName }}
-    crossplane.io/external-name: {{ $state.actionsconnector.oidcProvider.externalName }}
+    {{- if $state.actionsconnector.imports.oidcProvider }}
+    crossplane.io/external-name: {{ $state.actionsconnector.imports.oidcProvider }}
     {{- end }}
   labels: {{ $state.actionsconnector.labels | toJson }}
 spec:

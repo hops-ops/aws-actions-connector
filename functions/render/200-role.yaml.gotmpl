@@ -7,8 +7,8 @@ metadata:
   name: {{ $state.actionsconnector.role.name }}
   annotations:
     {{ setResourceNameAnnotation "role" }}
-    {{- if $state.actionsconnector.role.externalName }}
-    crossplane.io/external-name: {{ $state.actionsconnector.role.externalName }}
+    {{- if $state.actionsconnector.imports.role }}
+    crossplane.io/external-name: {{ $state.actionsconnector.imports.role }}
     {{- end }}
   labels: {{ $state.actionsconnector.labels | toJson }}
 spec:

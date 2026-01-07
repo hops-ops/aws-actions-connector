@@ -17,6 +17,7 @@
   "accountId" $eff.accountId
   "providerConfig" $eff.providerConfigRef
   "managementPolicies" $eff.managementPolicies
+  "imports" $eff.imports
   "labels" $eff.labels
   "tags" $eff.tags
   "oidcProvider" (dict
@@ -25,19 +26,16 @@
     "arn" $oidcProviderArn
     "url" "https://token.actions.githubusercontent.com"
     "thumbprints" $eff.github.thumbprints
-    "externalName" $eff.oidcProvider.externalName
   )
   "role" (dict
     "render" true
     "name" $roleName
-    "externalName" $eff.role.externalName
     "permissionsBoundary" $eff.role.permissionsBoundary
   )
   "policyAttachment" (dict
     "render" true
     "name" (printf "%s-policy" $roleName)
     "policyArn" $eff.policy.arn
-    "externalName" $eff.policyAttachment.externalName
   )
   "trustPolicy" (dict
     "subject" $subjectPattern

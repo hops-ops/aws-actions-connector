@@ -3,9 +3,9 @@
 # Tests GitHub Actions OIDC connector creation with optional import cycle.
 #
 # Import Cycle Testing:
-# 1. First run: Create connector with empty externalNames (creates new resources)
+# 1. First run: Create connector with empty imports (creates new resources)
 # 2. Get resource IDs after creation (see commands below)
-# 3. Update externalNames + set managementPolicies to orphan (remove Delete)
+# 3. Update imports + set managementPolicies to orphan (remove Delete)
 # 4. Run again to verify import works
 # 5. Delete claim - resources are orphaned in AWS
 #
@@ -35,18 +35,18 @@ _testAccountId = "034489662075"
 _orphan = ["Create", "Observe", "Update", "LateInitialize"]
 
 # =============================================================================
-# External names for import (leave empty for create, populate for import)
+# Imports for existing resources (leave empty for create, populate for import)
 # =============================================================================
-# OIDC Provider: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
-_oidc_external_name = "arn:aws:iam::" + _testAccountId + ":oidc-provider/token.actions.githubusercontent.com"
+# OIDC Provider ARN: arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com
+_import_oidc_provider = "arn:aws:iam::" + _testAccountId + ":oidc-provider/token.actions.githubusercontent.com"
 
-# Role: hops-github-actions
-# _role_external_name = "hops-github-actions"
-_role_external_name = ""
+# Role name: hops-github-actions
+# _import_role = "hops-github-actions"
+_import_role = ""
 
-# Policy Attachment: hops-github-actions/arn:aws:iam::aws:policy/AdministratorAccess'
+# Policy Attachment: hops-github-actions/arn:aws:iam::aws:policy/AdministratorAccess
 _policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-_policy_attachment_external_name = _role_external_name + "/" + _policy_arn if _role_external_name else ""
+_import_policy_attachment = _import_role + "/" + _policy_arn if _import_role else ""
 
 # =============================================================================
 # Test ActionsConnector
@@ -120,21 +120,19 @@ _items = [
                             repository = "*"
                             refPattern = "*"
                         }
-                        if _oidc_external_name:
-                            oidcProvider = {
-                                externalName = _oidc_external_name
-                            }
-                        if _role_external_name:
-                            role = {
-                                externalName = _role_external_name
+                        # Flat imports object for existing resources
+                        if _import_oidc_provider or _import_role or _import_policy_attachment:
+                            imports = {
+                                if _import_oidc_provider:
+                                    oidcProvider = _import_oidc_provider
+                                if _import_role:
+                                    role = _import_role
+                                if _import_policy_attachment:
+                                    policyAttachment = _import_policy_attachment
                             }
                         policy = {
                             arn = _policy_arn
                         }
-                        if _policy_attachment_external_name:
-                            policyAttachment = {
-                                externalName = _policy_attachment_external_name
-                            }
                         tags = {
                             "test" = "true"
                             "e2e" = "actionsconnector"

@@ -4,10 +4,9 @@
 {{- $spec := $xr.spec | default dict }}
 
 {{- $github := $spec.github | default dict }}
-{{- $oidcProvider := $spec.oidcProvider | default dict }}
+{{- $imports := $spec.imports | default dict }}
 {{- $role := $spec.role | default dict }}
 {{- $policy := $spec.policy | default dict }}
-{{- $policyAttachment := $spec.policyAttachment | default dict }}
 
 {{- /* Default labels: managed=true + <kind>=<name> */}}
 {{- $defaultLabels := dict
@@ -33,19 +32,17 @@
         "refPattern" ($github.refPattern | default "*")
         "thumbprints" ($github.thumbprints | default (list "6938fd4d98bab03faadb97b34396831e3780aea1"))
       )
-      "oidcProvider" (dict
-        "externalName" ($oidcProvider.externalName | default "")
+      "imports" (dict
+        "oidcProvider" ($imports.oidcProvider | default "")
+        "role" ($imports.role | default "")
+        "policyAttachment" ($imports.policyAttachment | default "")
       )
       "role" (dict
         "name" ($role.name | default "hops-github-actions")
-        "externalName" ($role.externalName | default "")
         "permissionsBoundary" ($role.permissionsBoundary | default "")
       )
       "policy" (dict
         "arn" ($policy.arn | default "arn:aws:iam::aws:policy/AdministratorAccess")
-      )
-      "policyAttachment" (dict
-        "externalName" ($policyAttachment.externalName | default "")
       )
       "tags" (merge (dict "hops" "true") ($spec.tags | default dict))
     )

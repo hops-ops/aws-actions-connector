@@ -53,6 +53,28 @@ spec:
                   - LateInitialize
                 default:
                 - "*"
+              imports:
+                type: object
+                description: |
+                  External names of existing AWS resources to import into Crossplane management.
+                  Use with managementPolicies excluding "Delete" to adopt without risk of deletion.
+                  Leave fields empty to create new resources.
+                properties:
+                  oidcProvider:
+                    type: string
+                    description: |
+                      Existing OIDC provider ARN to import.
+                      Example: "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+                  role:
+                    type: string
+                    description: |
+                      Existing IAM role name to import.
+                      Example: "hops-github-actions"
+                  policyAttachment:
+                    type: string
+                    description: |
+                      Existing policy attachment to import. Format: "role-name/policy-arn"
+                      Example: "hops-github-actions/arn:aws:iam::aws:policy/AdministratorAccess"
               labels:
                 type: object
                 description: Custom labels applied to all managed resources. Merged with default labels (hops.ops.com.ai/managed, hops.ops.com.ai/<kind>).
@@ -87,13 +109,6 @@ spec:
                       type: string
                     default:
                     - "6938fd4d98bab03faadb97b34396831e3780aea1"
-              oidcProvider:
-                type: object
-                description: OIDC provider configuration for importing existing resources.
-                properties:
-                  externalName:
-                    type: string
-                    description: External name (ARN) of existing OIDC provider to import. Leave empty to create new.
               role:
                 type: object
                 description: IAM role configuration.
@@ -102,9 +117,6 @@ spec:
                     type: string
                     description: Name for the IAM role. Defaults to "hops-github-actions".
                     default: hops-github-actions
-                  externalName:
-                    type: string
-                    description: External name of existing IAM role to import. Leave empty to create new.
                   permissionsBoundary:
                     type: string
                     description: ARN of the IAM permissions boundary to attach to the role.
@@ -119,13 +131,6 @@ spec:
                     description: ARN of the IAM policy to attach to the role.
                 default:
                   arn: "arn:aws:iam::aws:policy/AdministratorAccess"
-              policyAttachment:
-                type: object
-                description: Policy attachment configuration for importing existing resources.
-                properties:
-                  externalName:
-                    type: string
-                    description: External name of existing policy attachment to import. Format is "role-name/policy-arn".
               tags:
                 type: object
                 description: "AWS resource tags. Automatically includes {\"hops\": \"true\"}."

@@ -33,7 +33,8 @@ jobs:
         [
           { "example": "examples/actionsconnectors/standard.yaml" },
           { "example": "examples/actionsconnectors/single-repo.yaml" },
-          { "example": "examples/actionsconnectors/environment-deploy.yaml" }
+          { "example": "examples/actionsconnectors/environment-deploy.yaml" },
+          { "example": "examples/actionsconnectors/import-existing.yaml" }
         ]
       api_path: apis/actionsconnectors
       error_on_missing_schemas: true
