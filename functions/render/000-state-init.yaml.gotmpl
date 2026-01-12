@@ -2,6 +2,7 @@
 {{- $xr := getCompositeResource . }}
 {{- $metadata := $xr.metadata | default dict }}
 {{- $spec := $xr.spec | default dict }}
+{{- $name := $metadata.name | default "" }}
 
 {{- $github := $spec.github | default dict }}
 {{- $oidcProvider := $spec.oidcProvider | default dict }}
@@ -9,11 +10,13 @@
 {{- $policy := $spec.policy | default dict }}
 {{- $policyAttachment := $spec.policyAttachment | default dict }}
 
-{{- /* Default labels: managed=true + <kind>=<name> */}}
-{{- $defaultLabels := dict
+{{- /* Default labels/tags: managed=true + <kind>=<name> */}}
+{{- $defaults := dict
   "hops.ops.com.ai/managed" "true"
-  (printf "hops.ops.com.ai/%s" (lower $xr.kind)) $metadata.name
+  (printf "hops.ops.com.ai/%s" (lower $xr.kind)) $name
 }}
+{{- $labels := merge $defaults ($spec.labels | default dict) }}
+{{- $tags := merge $defaults ($spec.tags | default dict) }}
 
 {{- $state := dict
   "spec" (dict
@@ -26,7 +29,7 @@
         "kind" (($spec.providerConfigRef | default dict).kind | default "ProviderConfig")
       )
       "managementPolicies" ($spec.managementPolicies | default (list "*"))
-      "labels" (merge $defaultLabels ($spec.labels | default dict))
+      "labels" $labels
       "github" (dict
         "owner" ($github.owner | default "")
         "repository" ($github.repository | default "*")
@@ -47,7 +50,7 @@
       "policyAttachment" (dict
         "externalName" ($policyAttachment.externalName | default "")
       )
-      "tags" (merge (dict "hops" "true") ($spec.tags | default dict))
+      "tags" $tags
     )
   )
   "observed" (dict)

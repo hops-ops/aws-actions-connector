@@ -170,7 +170,8 @@ _items = [
                     kind = "Role"
                     metadata.name = "tagged-role"
                     spec.forProvider.tags = {
-                        hops = "true"
+                        "hops.ops.com.ai/managed" = "true"
+                        "hops.ops.com.ai/actionsconnector" = "tagged"
                         environment = "production"
                         team = "platform"
                     }
