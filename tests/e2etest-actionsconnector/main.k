@@ -41,8 +41,8 @@ _orphan = ["Create", "Observe", "Update", "LateInitialize"]
 _oidc_external_name = "arn:aws:iam::" + _testAccountId + ":oidc-provider/token.actions.githubusercontent.com"
 
 # Role: hops-github-actions
-# _role_external_name = "hops-github-actions"
-_role_external_name = ""
+_role_external_name = "hops-github-actions"
+# _role_external_name = ""
 
 # Policy Attachment: hops-github-actions/arn:aws:iam::aws:policy/AdministratorAccess'
 _policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -136,9 +136,8 @@ _items = [
                                 externalName = _policy_attachment_external_name
                             }
                         tags = {
-                            "test" = "true"
-                            "e2e" = "actionsconnector"
-                            "hops.ops.com.ai/managed" = "true"
+                            "hops.ops.com.ai/test-repo": "https://github.com/hops-ops/aws-actions-connector"
+                            "hops.ops.com.ai/persistent": "true"
                         }
                     }
                 }
