@@ -24,17 +24,18 @@ spec:
         hops.ops.com.ai/actionsconnector: {{ $state.actionsconnector.name }}
 {{- end }}
 
-# Usage: Role protects RolePolicyAttachment
+# Usage: Delete RolePolicyAttachment before Role
 {{- if and $state.observed.role.ready $state.observed.policyAttachment.ready }}
 ---
 apiVersion: protection.crossplane.io/v1beta1
 kind: Usage
 metadata:
-  name: {{ $state.actionsconnector.name }}-role-protects-attachment
+  name: {{ $state.actionsconnector.name }}-delete-attachment-before-role
   annotations:
     {{ setResourceNameAnnotation "usage-role-attachment" }}
   labels: {{ $state.actionsconnector.labels | toJson }}
 spec:
+  replayDeletion: true
   of:
     apiVersion: iam.aws.m.upbound.io/v1beta1
     kind: Role

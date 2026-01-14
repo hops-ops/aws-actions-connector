@@ -40,5 +40,5 @@ spec:
     {{- if $state.actionsconnector.role.permissionsBoundary }}
     permissionsBoundary: {{ $state.actionsconnector.role.permissionsBoundary }}
     {{- end }}
-    tags: {{ toYaml $state.actionsconnector.tags | nindent 6 }}
+    tags: {{ merge (dict "Name" $state.actionsconnector.role.name) $state.actionsconnector.tags | toYaml | nindent 6 }}
 {{- end }}
