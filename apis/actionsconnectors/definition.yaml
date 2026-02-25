@@ -108,6 +108,12 @@ spec:
                   permissionsBoundary:
                     type: string
                     description: ARN of the IAM permissions boundary to attach to the role.
+                  maxSessionDuration:
+                    type: integer
+                    description: Maximum session duration (in seconds) for the IAM role. Defaults to 3600.
+                    default: 3600
+                    minimum: 3600
+                    maximum: 43200
               policy:
                 type: object
                 description: IAM policy configuration.

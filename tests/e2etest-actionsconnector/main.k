@@ -124,10 +124,11 @@ _items = [
                             oidcProvider = {
                                 externalName = _oidc_external_name
                             }
-                        if _role_external_name:
-                            role = {
+                        role = {
+                            maxSessionDuration = 7200
+                            if _role_external_name:
                                 externalName = _role_external_name
-                            }
+                        }
                         policy = {
                             arn = _policy_arn
                         }
