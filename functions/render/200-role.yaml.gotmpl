@@ -37,6 +37,7 @@ spec:
           }
         ]
       }
+    maxSessionDuration: {{ $state.actionsconnector.role.maxSessionDuration }}
     {{- if $state.actionsconnector.role.permissionsBoundary }}
     permissionsBoundary: {{ $state.actionsconnector.role.permissionsBoundary }}
     {{- end }}

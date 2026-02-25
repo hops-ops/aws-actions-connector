@@ -43,6 +43,7 @@
         "name" ($role.name | default "hops-github-actions")
         "externalName" ($role.externalName | default "")
         "permissionsBoundary" ($role.permissionsBoundary | default "")
+        "maxSessionDuration" ($role.maxSessionDuration | default 3600)
       )
       "policy" (dict
         "arn" ($policy.arn | default "arn:aws:iam::aws:policy/AdministratorAccess")
