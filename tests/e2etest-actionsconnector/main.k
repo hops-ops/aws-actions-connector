@@ -28,8 +28,8 @@ import base64
 _awsCredsRaw = file.read("secrets/aws-creds")
 _awsCreds = base64.encode(_awsCredsRaw)
 
-# AWS account ID for testing - update this to your test account
-_testAccountId = "034489662075"
+# AWS account ID for testing
+_testAccountId = file.read("env/AWS_ACCOUNT_ID").strip()
 
 # Orphan policy - no Delete means resources persist in AWS after claim deletion
 _orphan = ["Create", "Observe", "Update", "LateInitialize"]
