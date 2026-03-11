@@ -42,7 +42,7 @@ jobs:
     uses: unbounded-tech/workflows-crossplane/.github/workflows/test.yaml@v2.19.1
 
   e2e:
-    uses: unbounded-tech/workflows-crossplane/.github/workflows/e2e.yaml@feat/kcl-env-files
+    uses: unbounded-tech/workflows-crossplane/.github/workflows/e2e.yaml@v2.19.1
     with:
       aws: true
       aws-use-oidc: true
