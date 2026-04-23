@@ -4,6 +4,7 @@ PACKAGE ?= aws-actions-connector
 XRD_DIR := apis/actionsconnectors
 COMPOSITION := $(XRD_DIR)/composition.yaml
 DEFINITION := $(XRD_DIR)/definition.yaml
+CONFIGURATION := $(XRD_DIR)/configuration.yaml
 EXAMPLE_DEFAULT := examples/actionsconnectors/standard.yaml
 RENDER_TESTS := $(wildcard tests/test-*)
 E2E_TESTS := $(wildcard tests/e2etest-*)
@@ -19,9 +20,14 @@ EXAMPLES := \
 clean:
 	rm -rf _output
 	rm -rf .up
+	rm -f $(CONFIGURATION)
 
 build:
 	up project build
+
+generate-configuration:
+	@set -euo pipefail; \
+	hops validate generate-configuration --path . --api-path "$(XRD_DIR)"
 
 # Render all examples (parallel execution, output shown per-job when complete)
 render\:all:
@@ -54,7 +60,7 @@ render\:all:
 	exit $$failed
 
 # Validate all examples (parallel execution, output shown per-job when complete)
-validate\:all:
+validate\:all: generate-configuration
 	@tmpdir=$$(mktemp -d); \
 	pids=""; \
 	for entry in $(EXAMPLES); do \
@@ -88,9 +94,10 @@ validate\:all:
 	exit $$failed
 
 # Shorthand aliases
+.PHONY: render validate generate-configuration
 render:
 	$(MAKE) render:all
-validate:
+validate: generate-configuration
 	$(MAKE) validate:all
 
 # Single example render (usage: make render:example)
@@ -105,7 +112,7 @@ render\:%:
 	fi
 
 # Single example validate (usage: make validate:example)
-validate\:%:
+validate\:%: generate-configuration
 	@example="examples/actionsconnectors/$$*.yaml"; \
 	if [ -f "$$example" ]; then \
 		echo "=== Validating $$example ==="; \
