@@ -117,6 +117,8 @@ _items = [
                         managementPolicies = _orphan
                         github = {
                             owner = "hops-ops"
+                            # Repository renames use GitHub's immutable OIDC subject format.
+                            ownerId = "238156109"
                             repository = "*"
                             refPattern = "*"
                         }

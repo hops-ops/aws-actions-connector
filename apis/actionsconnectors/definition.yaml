@@ -68,10 +68,18 @@ spec:
                   owner:
                     type: string
                     description: GitHub organization or username (e.g., "myorg" or "myuser").
+                  ownerId:
+                    type: string
+                    pattern: "^[0-9]+$"
+                    description: Immutable GitHub owner ID. When set, the trust policy accepts both legacy and immutable subject formats.
                   repository:
                     type: string
                     description: Repository name or pattern. Use "*" for all repos. Defaults to "*".
                     default: "*"
+                  repositoryId:
+                    type: string
+                    pattern: "^[0-9]+$"
+                    description: Immutable GitHub repository ID. Required with ownerId when repository is not "*".
                   refPattern:
                     type: string
                     description: |
@@ -87,6 +95,11 @@ spec:
                       type: string
                     default:
                     - "6938fd4d98bab03faadb97b34396831e3780aea1"
+                x-kubernetes-validations:
+                - rule: "!has(self.repositoryId) || has(self.ownerId)"
+                  message: repositoryId requires ownerId
+                - rule: "!has(self.ownerId) || !has(self.repository) || self.repository == '*' || has(self.repositoryId)"
+                  message: repositoryId is required with ownerId for a specific repository
               oidcProvider:
                 type: object
                 description: OIDC provider configuration for importing existing resources.
@@ -170,4 +183,9 @@ spec:
                 properties:
                   subject:
                     type: string
-                    description: The subject pattern used in the trust policy.
+                    description: The legacy subject pattern used in the trust policy.
+                  subjects:
+                    type: array
+                    description: All subject patterns used in the trust policy, including the immutable pattern when IDs are configured.
+                    items:
+                      type: string

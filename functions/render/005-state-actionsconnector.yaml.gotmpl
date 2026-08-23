@@ -4,6 +4,15 @@
 # Build the subject pattern for trust policy
 # Format: repo:<org>/<repo>:<ref>
 {{- $subjectPattern := printf "repo:%s/%s:%s" $eff.github.owner $eff.github.repository $eff.github.refPattern }}
+{{- $subjectPatterns := list $subjectPattern }}
+{{- if ne $eff.github.ownerId "" }}
+  {{- $immutableOwner := printf "%s@%s" $eff.github.owner $eff.github.ownerId }}
+  {{- $immutableRepository := $eff.github.repository }}
+  {{- if ne $eff.github.repository "*" }}
+    {{- $immutableRepository = printf "%s@%s" $eff.github.repository $eff.github.repositoryId }}
+  {{- end }}
+  {{- $subjectPatterns = append $subjectPatterns (printf "repo:%s/%s:%s" $immutableOwner $immutableRepository $eff.github.refPattern) }}
+{{- end }}
 
 # Build the OIDC provider ARN
 {{- $oidcProviderArn := printf "arn:aws:iam::%s:oidc-provider/token.actions.githubusercontent.com" $eff.accountId }}
@@ -42,6 +51,7 @@
   )
   "trustPolicy" (dict
     "subject" $subjectPattern
+    "subjects" $subjectPatterns
   )
 }}
 {{- $state = set $state "actionsconnector" $actionsconnector }}
