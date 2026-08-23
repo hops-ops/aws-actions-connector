@@ -97,7 +97,8 @@ _items = [
                 spec = {
                     accountId = "123456789012"
                     github = {
-                        owner = "my-org@123456"
+                        owner = "my-org"
+                        ownerId = "123456"
                         repository = "*"
                         refPattern = "*"
                     }
@@ -108,13 +109,54 @@ _items = [
                     apiVersion = "aws.hops.ops.com.ai/v1alpha1"
                     kind = "ActionsConnector"
                     metadata.name = "immutable-org-wide"
-                    status.trustPolicy.subject = "repo:my-org@123456/*:*"
+                    status.trustPolicy = {
+                        subject = "repo:my-org/*:*"
+                        subjects = [
+                            "repo:my-org/*:*"
+                            "repo:my-org@123456/*:*"
+                        ]
+                    }
                 }
             ]
         }
     }
 
-    # Test 5: Trust policy subject pattern - specific repo and branch
+    # Test 5: Trust policy subject pattern - immutable specific repo
+    metav1alpha1.CompositionTest {
+        metadata.name = "trust-policy-immutable-specific-repo"
+        spec = {
+            compositionPath = "apis/actionsconnectors/composition.yaml"
+            xrdPath = "apis/actionsconnectors/definition.yaml"
+            timeoutSeconds = 60
+            validate = False
+            xr = awsv1alpha1.ActionsConnector {
+                metadata.name = "immutable-repo"
+                spec = {
+                    accountId = "123456789012"
+                    github = {
+                        owner = "my-org"
+                        ownerId = "123456"
+                        repository = "infrastructure"
+                        repositoryId = "456789"
+                        refPattern = "ref:refs/heads/main"
+                    }
+                }
+            }
+            assertResources = [
+                {
+                    apiVersion = "aws.hops.ops.com.ai/v1alpha1"
+                    kind = "ActionsConnector"
+                    metadata.name = "immutable-repo"
+                    status.trustPolicy.subjects = [
+                        "repo:my-org/infrastructure:ref:refs/heads/main"
+                        "repo:my-org@123456/infrastructure@456789:ref:refs/heads/main"
+                    ]
+                }
+            ]
+        }
+    }
+
+    # Test 6: Trust policy subject pattern - specific repo and branch
     metav1alpha1.CompositionTest {
         metadata.name = "trust-policy-specific-repo"
         spec = {
@@ -144,7 +186,7 @@ _items = [
         }
     }
 
-    # Test 6: Trust policy subject pattern - environment protection
+    # Test 7: Trust policy subject pattern - environment protection
     metav1alpha1.CompositionTest {
         metadata.name = "trust-policy-environment"
         spec = {
@@ -174,7 +216,7 @@ _items = [
         }
     }
 
-    # Test 7: Custom tags are merged with defaults
+    # Test 8: Custom tags are merged with defaults
     metav1alpha1.CompositionTest {
         metadata.name = "custom-tags-merged"
         spec = {
@@ -210,7 +252,7 @@ _items = [
         }
     }
 
-    # Test 8: Permissions boundary is applied when specified
+    # Test 9: Permissions boundary is applied when specified
     metav1alpha1.CompositionTest {
         metadata.name = "permissions-boundary"
         spec = {

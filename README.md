@@ -38,6 +38,8 @@ This creates an OIDC provider and role (`hops-github-actions`) that any repo in 
 | Field | Default | Description |
 |-------|---------|-------------|
 | `spec.github.repository` | `"*"` | Repository name or `"*"` for all repos |
+| `spec.github.ownerId` | - | Immutable GitHub owner ID; enables both legacy and immutable subject trust |
+| `spec.github.repositoryId` | - | Immutable repository ID; required with `ownerId` for a specific repository |
 | `spec.github.refPattern` | `"*"` | Git ref pattern: `"*"`, `"ref:refs/heads/main"`, `"environment:production"` |
 | `spec.role.name` | `"hops-github-actions"` | IAM role name |
 | `spec.role.permissionsBoundary` | - | ARN of permissions boundary to attach |
@@ -48,19 +50,21 @@ This creates an OIDC provider and role (`hops-github-actions`) that any repo in 
 ### Immutable GitHub OIDC subjects
 
 GitHub repositories created or renamed after July 15, 2026 use immutable OIDC
-subjects that append numeric IDs to the owner and repository names. Use those
-complete subject segments in `owner` and `repository`:
+subjects that append numeric IDs to the owner and repository names. Supply the
+IDs separately so the role accepts both legacy and immutable subjects:
 
 ```yaml
 spec:
   github:
-    owner: my-org@123456
-    repository: my-app@456789
+    owner: my-org
+    ownerId: "123456"
+    repository: my-app
+    repositoryId: "456789"
     refPattern: "ref:refs/heads/main"
 ```
 
-For organization-wide access, keep `repository: "*"` and append only the owner
-ID. Preview a repository's expected subject prefix with:
+For organization-wide access, keep `repository: "*"` and set only `ownerId`.
+Preview a repository's expected subject prefix with:
 
 ```bash
 gh api repos/my-org/my-app/actions/oidc/customization/sub \
@@ -187,6 +191,9 @@ status:
     name: hops-github-actions
   trustPolicy:
     subject: "repo:my-org/*:*"
+    subjects:
+      - "repo:my-org/*:*"
+      - "repo:my-org@123456/*:*"
 ```
 
 ## Security Considerations

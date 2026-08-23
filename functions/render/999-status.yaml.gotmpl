@@ -14,3 +14,4 @@ status:
     name: {{ $s.role.name }}
   trustPolicy:
     subject: {{ $s.trustPolicy.subject }}
+    subjects: {{ $s.trustPolicy.subjects | toJson }}
