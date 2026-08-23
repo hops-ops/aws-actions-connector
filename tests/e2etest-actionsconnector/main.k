@@ -116,7 +116,8 @@ _items = [
                         # Prevent deletion of resources after E2E test
                         managementPolicies = _orphan
                         github = {
-                            owner = "hops-ops"
+                            # Repository renames use GitHub's immutable OIDC subject format.
+                            owner = "hops-ops@238156109"
                             repository = "*"
                             refPattern = "*"
                         }

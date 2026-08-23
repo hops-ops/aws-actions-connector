@@ -45,6 +45,28 @@ This creates an OIDC provider and role (`hops-github-actions`) that any repo in 
 | `spec.providerConfigRef.name` | `"default"` | AWS ProviderConfig name |
 | `spec.tags` | `{"hops": "true"}` | Additional AWS resource tags |
 
+### Immutable GitHub OIDC subjects
+
+GitHub repositories created or renamed after July 15, 2026 use immutable OIDC
+subjects that append numeric IDs to the owner and repository names. Use those
+complete subject segments in `owner` and `repository`:
+
+```yaml
+spec:
+  github:
+    owner: my-org@123456
+    repository: my-app@456789
+    refPattern: "ref:refs/heads/main"
+```
+
+For organization-wide access, keep `repository: "*"` and append only the owner
+ID. Preview a repository's expected subject prefix with:
+
+```bash
+gh api repos/my-org/my-app/actions/oidc/customization/sub \
+  --jq .sub_claim_prefix
+```
+
 ## Common Use Cases
 
 ### Organization-Wide Access

@@ -84,7 +84,37 @@ _items = [
         }
     }
 
-    # Test 4: Trust policy subject pattern - specific repo and branch
+    # Test 4: Trust policy subject pattern - immutable org wildcard
+    metav1alpha1.CompositionTest {
+        metadata.name = "trust-policy-immutable-org-wildcard"
+        spec = {
+            compositionPath = "apis/actionsconnectors/composition.yaml"
+            xrdPath = "apis/actionsconnectors/definition.yaml"
+            timeoutSeconds = 60
+            validate = False
+            xr = awsv1alpha1.ActionsConnector {
+                metadata.name = "immutable-org-wide"
+                spec = {
+                    accountId = "123456789012"
+                    github = {
+                        owner = "my-org@123456"
+                        repository = "*"
+                        refPattern = "*"
+                    }
+                }
+            }
+            assertResources = [
+                {
+                    apiVersion = "aws.hops.ops.com.ai/v1alpha1"
+                    kind = "ActionsConnector"
+                    metadata.name = "immutable-org-wide"
+                    status.trustPolicy.subject = "repo:my-org@123456/*:*"
+                }
+            ]
+        }
+    }
+
+    # Test 5: Trust policy subject pattern - specific repo and branch
     metav1alpha1.CompositionTest {
         metadata.name = "trust-policy-specific-repo"
         spec = {
@@ -114,7 +144,7 @@ _items = [
         }
     }
 
-    # Test 5: Trust policy subject pattern - environment protection
+    # Test 6: Trust policy subject pattern - environment protection
     metav1alpha1.CompositionTest {
         metadata.name = "trust-policy-environment"
         spec = {
@@ -144,7 +174,7 @@ _items = [
         }
     }
 
-    # Test 6: Custom tags are merged with defaults
+    # Test 7: Custom tags are merged with defaults
     metav1alpha1.CompositionTest {
         metadata.name = "custom-tags-merged"
         spec = {
@@ -180,7 +210,7 @@ _items = [
         }
     }
 
-    # Test 7: Permissions boundary is applied when specified
+    # Test 8: Permissions boundary is applied when specified
     metav1alpha1.CompositionTest {
         metadata.name = "permissions-boundary"
         spec = {

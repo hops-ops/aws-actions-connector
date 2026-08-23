@@ -67,10 +67,10 @@ spec:
                 properties:
                   owner:
                     type: string
-                    description: GitHub organization or username (e.g., "myorg" or "myuser").
+                    description: GitHub organization or username subject segment. For immutable OIDC subjects, use "<name>@<owner-id>".
                   repository:
                     type: string
-                    description: Repository name or pattern. Use "*" for all repos. Defaults to "*".
+                    description: Repository subject segment or pattern. For an immutable specific-repository subject, use "<name>@<repository-id>". Use "*" for all repos. Defaults to "*".
                     default: "*"
                   refPattern:
                     type: string
