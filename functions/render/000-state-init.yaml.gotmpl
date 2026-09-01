@@ -9,6 +9,10 @@
 {{- $role := $spec.role | default dict }}
 {{- $policy := $spec.policy | default dict }}
 {{- $policyAttachment := $spec.policyAttachment | default dict }}
+{{- $refPatterns := $github.refPatterns | default (list) }}
+{{- if eq (len $refPatterns) 0 }}
+  {{- $refPatterns = list ($github.refPattern | default "*") }}
+{{- end }}
 
 {{- /* Default labels/tags: managed=true + <kind>=<name> */}}
 {{- $defaults := dict
@@ -36,6 +40,7 @@
         "repository" ($github.repository | default "*")
         "repositoryId" ($github.repositoryId | default "")
         "refPattern" ($github.refPattern | default "*")
+        "refPatterns" $refPatterns
         "thumbprints" ($github.thumbprints | default (list "6938fd4d98bab03faadb97b34396831e3780aea1"))
       )
       "oidcProvider" (dict

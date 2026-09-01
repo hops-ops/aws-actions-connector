@@ -40,7 +40,8 @@ This creates an OIDC provider and role (`hops-github-actions`) that any repo in 
 | `spec.github.repository` | `"*"` | Repository name or `"*"` for all repos |
 | `spec.github.ownerId` | - | Immutable GitHub owner ID; enables both legacy and immutable subject trust |
 | `spec.github.repositoryId` | - | Immutable repository ID; required with `ownerId` for a specific repository |
-| `spec.github.refPattern` | `"*"` | Git ref pattern: `"*"`, `"ref:refs/heads/main"`, `"environment:production"` |
+| `spec.github.refPattern` | `"*"` | One OIDC context pattern; ignored when `refPatterns` is set |
+| `spec.github.refPatterns` | - | OIDC context patterns such as `pull_request` and `ref:refs/tags/v*` |
 | `spec.role.name` | `"hops-github-actions"` | IAM role name |
 | `spec.role.permissionsBoundary` | - | ARN of permissions boundary to attach |
 | `spec.policy.arn` | `AdministratorAccess` | IAM policy ARN to attach |
@@ -102,6 +103,29 @@ spec:
   policy:
     arn: arn:aws:iam::123456789012:policy/my-app-deploy-policy
 ```
+
+### Preview and release workflows
+
+Trust pull-request previews and SemVer tag releases without allowing every
+branch or GitHub Actions context:
+
+```yaml
+spec:
+  accountId: "123456789012"
+  github:
+    owner: my-org
+    repository: my-app
+    refPatterns:
+      - pull_request
+      - "ref:refs/tags/v*"
+  role:
+    name: my-app-publisher
+  policy:
+    arn: arn:aws:iam::123456789012:policy/my-app-publisher
+```
+
+When both fields are supplied, `refPatterns` takes precedence over the
+backward-compatible `refPattern` field.
 
 ### Environment-Based Deployment
 

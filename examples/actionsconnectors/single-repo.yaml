@@ -11,7 +11,9 @@ spec:
   github:
     owner: my-org
     repository: my-app
-    refPattern: "ref:refs/heads/main"
+    refPatterns:
+      - pull_request
+      - "ref:refs/tags/v*"
   role:
     permissionsBoundary: arn:aws:iam::123456789012:policy/deploy-boundary
   policy:

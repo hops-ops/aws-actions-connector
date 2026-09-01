@@ -1,18 +1,23 @@
 # code: language=yaml
 {{- $eff := $state.spec.effective }}
 
-# Build the subject pattern for trust policy
+# Build the subject patterns for the trust policy
 # Format: repo:<org>/<repo>:<ref>
-{{- $subjectPattern := printf "repo:%s/%s:%s" $eff.github.owner $eff.github.repository $eff.github.refPattern }}
-{{- $subjectPatterns := list $subjectPattern }}
+{{- $subjectPatterns := list }}
+{{- range $refPattern := $eff.github.refPatterns }}
+  {{- $subjectPatterns = append $subjectPatterns (printf "repo:%s/%s:%s" $eff.github.owner $eff.github.repository $refPattern) }}
+{{- end }}
 {{- if ne $eff.github.ownerId "" }}
   {{- $immutableOwner := printf "%s@%s" $eff.github.owner $eff.github.ownerId }}
   {{- $immutableRepository := $eff.github.repository }}
   {{- if ne $eff.github.repository "*" }}
     {{- $immutableRepository = printf "%s@%s" $eff.github.repository $eff.github.repositoryId }}
   {{- end }}
-  {{- $subjectPatterns = append $subjectPatterns (printf "repo:%s/%s:%s" $immutableOwner $immutableRepository $eff.github.refPattern) }}
+  {{- range $refPattern := $eff.github.refPatterns }}
+    {{- $subjectPatterns = append $subjectPatterns (printf "repo:%s/%s:%s" $immutableOwner $immutableRepository $refPattern) }}
+  {{- end }}
 {{- end }}
+{{- $subjectPattern := first $subjectPatterns }}
 
 # Build the OIDC provider ARN
 {{- $oidcProviderArn := printf "arn:aws:iam::%s:oidc-provider/token.actions.githubusercontent.com" $eff.accountId }}

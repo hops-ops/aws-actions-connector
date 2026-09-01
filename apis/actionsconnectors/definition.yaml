@@ -83,9 +83,26 @@ spec:
                   refPattern:
                     type: string
                     description: |
-                      Git ref pattern for the trust policy condition. Use "*" for any ref.
-                      Examples: "*", "ref:refs/heads/main", "environment:production".
+                      Single GitHub OIDC context pattern for the trust policy condition.
+                      Use refPatterns when more than one context must be trusted. Ignored
+                      when refPatterns is set.
+                      Examples: "*", "pull_request", "ref:refs/heads/main", "environment:production".
                     default: "*"
+                  refPatterns:
+                    type: array
+                    description: |
+                      GitHub OIDC context patterns trusted by the role. When set, this
+                      list takes precedence over refPattern. Use this to trust distinct
+                      events without granting every repository context access.
+                    minItems: 1
+                    maxItems: 10
+                    items:
+                      type: string
+                      minLength: 1
+                      maxLength: 256
+                    x-kubernetes-validations:
+                    - rule: "self.all(pattern, self.filter(candidate, candidate == pattern).size() == 1)"
+                      message: refPatterns must not contain duplicates
                   thumbprints:
                     type: array
                     description: |
@@ -186,6 +203,6 @@ spec:
                     description: The legacy subject pattern used in the trust policy.
                   subjects:
                     type: array
-                    description: All subject patterns used in the trust policy, including the immutable pattern when IDs are configured.
+                    description: All subject patterns used in the trust policy, including immutable variants when IDs are configured.
                     items:
                       type: string
