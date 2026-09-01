@@ -96,10 +96,12 @@ spec:
                       events without granting every repository context access.
                     minItems: 1
                     maxItems: 10
-                    uniqueItems: true
                     items:
                       type: string
                       minLength: 1
+                    x-kubernetes-validations:
+                    - rule: "self.all(pattern, self.filter(candidate, candidate == pattern).size() == 1)"
+                      message: refPatterns must not contain duplicates
                   thumbprints:
                     type: array
                     description: |
