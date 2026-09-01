@@ -99,6 +99,7 @@ spec:
                     items:
                       type: string
                       minLength: 1
+                      maxLength: 256
                     x-kubernetes-validations:
                     - rule: "self.all(pattern, self.filter(candidate, candidate == pattern).size() == 1)"
                       message: refPatterns must not contain duplicates
