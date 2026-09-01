@@ -216,7 +216,51 @@ _items = [
         }
     }
 
-    # Test 8: Custom tags are merged with defaults
+    # Test 8: Multiple ref patterns produce legacy and immutable subjects
+    metav1alpha1.CompositionTest {
+        metadata.name = "trust-policy-multiple-ref-patterns"
+        spec = {
+            compositionPath = "apis/actionsconnectors/composition.yaml"
+            xrdPath = "apis/actionsconnectors/definition.yaml"
+            timeoutSeconds = 60
+            validate = False
+            xr = awsv1alpha1.ActionsConnector {
+                metadata.name = "preview-and-release"
+                spec = {
+                    accountId = "123456789012"
+                    github = {
+                        owner = "my-org"
+                        ownerId = "123456"
+                        repository = "my-app"
+                        repositoryId = "456789"
+                        refPattern = "*"
+                        refPatterns = [
+                            "pull_request"
+                            "ref:refs/tags/v*"
+                        ]
+                    }
+                }
+            }
+            assertResources = [
+                {
+                    apiVersion = "aws.hops.ops.com.ai/v1alpha1"
+                    kind = "ActionsConnector"
+                    metadata.name = "preview-and-release"
+                    status.trustPolicy = {
+                        subject = "repo:my-org/my-app:pull_request"
+                        subjects = [
+                            "repo:my-org/my-app:pull_request"
+                            "repo:my-org/my-app:ref:refs/tags/v*"
+                            "repo:my-org@123456/my-app@456789:pull_request"
+                            "repo:my-org@123456/my-app@456789:ref:refs/tags/v*"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+
+    # Test 9: Custom tags are merged with defaults
     metav1alpha1.CompositionTest {
         metadata.name = "custom-tags-merged"
         spec = {
@@ -252,7 +296,7 @@ _items = [
         }
     }
 
-    # Test 9: Permissions boundary is applied when specified
+    # Test 10: Permissions boundary is applied when specified
     metav1alpha1.CompositionTest {
         metadata.name = "permissions-boundary"
         spec = {
